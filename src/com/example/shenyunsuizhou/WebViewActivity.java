@@ -3,7 +3,12 @@ package com.example.shenyunsuizhou;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import com.example.shenyunsuizhou.json.DataManeger;
 import com.example.shenyunsuizhou.json.Normal;
+import com.example.shenyunsuizhou.json.Test_Bean;
+import com.example.shenyunsuizhou.json.Y_Exception;
+import com.umeng.analytics.MobclickAgent;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,6 +59,7 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 	public static ArrayList<Hashtable<String, String>> data ;//获取数据，由上级页面传递
 	public static int mark;//获取当前点击的是第几项，然后给web页面赋值
 	
+	@SuppressWarnings("deprecation")
 	@SuppressLint({ "JavascriptInterface", "SetJavaScriptEnabled" })
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,8 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 		webShareButton.setOnClickListener(this);
 		RefreshButton.setOnClickListener(this);
 		//显示内容
+
+		count(data.get(mark).get(listViewActivity.KEY_ID));
 		initWeb(data.get(mark).get(listViewActivity.KEY_TITLE),
 				data.get(mark).get(listViewActivity.KEY_INTROTEXT),
 				data.get(mark).get(listViewActivity.KEY_TIME));
@@ -90,6 +98,10 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 		 */
 		WebSettings webSettings = webView.getSettings();       
         webSettings.setJavaScriptEnabled(true);       
+        
+        
+        
+        
         webView.addJavascriptInterface(new Object() {       
             public void clickOnAndroid( String strings) {   
             	webValue = strings;
@@ -106,6 +118,28 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 
 	}
 
+	
+	private void count(final String key)
+	{
+		new Thread()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					String countURL= "http://119.36.193.148/suizhou/api/articlec/"+key;
+					
+					Test_Bean data = DataManeger.getTestData(countURL);
+				} catch (Y_Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}.start();
+	}
+	
 	/**
 	 * 根据传递的url调用系统播放器进行视频播放
 	 * @param url
@@ -127,9 +161,11 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 	private void initWeb(String title,String introtext,String time) {
 		
 		
-		Log.v("-----yyyyy----", introtext);
+		
 		byte b[] = android.util.Base64.decode(introtext, Base64.DEFAULT);
 		introtext = new String(b);
+		
+		Log.v("-----webView----", introtext);
 		
 		Normal normal = new Normal(this);
 		String summary = normal.getFromAssets("template.html");
@@ -151,6 +187,7 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 			if ((mark+1)>1) {
 				mark--;
 				Log.e("---1-", ""+mark);
+				count(data.get(mark).get(listViewActivity.KEY_ID));
 				initWeb(data.get(mark).get(listViewActivity.KEY_TITLE),
 						data.get(mark).get(listViewActivity.KEY_INTROTEXT),
 						data.get(mark).get(listViewActivity.KEY_TIME));
@@ -172,6 +209,7 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 		if (data.size()>mark) {
 			mark++;
 			Log.e("---2-", ""+mark);
+			count(data.get(mark).get(listViewActivity.KEY_ID));
 			initWeb(data.get(mark).get(listViewActivity.KEY_TITLE),
 					data.get(mark).get(listViewActivity.KEY_INTROTEXT),
 					data.get(mark).get(listViewActivity.KEY_TIME));
@@ -254,6 +292,19 @@ public class WebViewActivity extends Activity implements android.view.View.OnCli
 			break;
 		}
 	}
-	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
 
 }

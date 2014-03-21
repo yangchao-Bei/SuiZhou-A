@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import com.example.shenyunsuizhou.json.Normal;
+import com.umeng.analytics.MobclickAgent;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -153,7 +154,20 @@ public class WebActivity extends Activity implements android.view.View.OnClickLi
 		}
 	}
 
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
 	
 
 }

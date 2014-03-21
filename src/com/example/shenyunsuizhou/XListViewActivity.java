@@ -3,9 +3,6 @@ package com.example.shenyunsuizhou;
 import java.util.ArrayList;
 
 import com.example.shenyunsuizhou.XListView.IXListViewListener;
-
-
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;

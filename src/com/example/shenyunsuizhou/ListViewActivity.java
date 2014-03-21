@@ -20,14 +20,14 @@ import com.example.shenyunsuizhou.json.DataManeger;
 import com.example.shenyunsuizhou.json.Test_Bean;
 import com.example.shenyunsuizhou.json.Test_Model;
 import com.example.shenyunsuizhou.json.Y_Exception;
+import com.umeng.analytics.MobclickAgent;
+
 import adapter.LazyAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.R.bool;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -79,15 +79,16 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 	private Button siteButton;
 
 	//以下KEY参数对照上面Json参数总结
-	public static final String KEY_TITLE = "title";  
-	public static final String KEY_DESCRIPTION = "description";
-	public static final String KEY_NOTE = "note";
-	public static final String KEY_THUMB_URL = "cnparams"; 
-	public static final String KEY_TIME = "modified_time"; 
-	public static final String KEY_INTROTEXT = "introtext"; 
-	public static final String KEY_ZCATEGORYURL = "zcategoryurl"; 
-	public static final String KEY_AZHUADONG = "azhuadong"; //判断下级页面是否为滑动列表 值为yes为滑动，，，，《去除使用》
-	public static final String KEY_ZCATEGORSTRINGS = "zcategoryStrings"; //获取当前列表等级，如为no则为最下级列表，点击跳转至浏览页面
+	public static final String KEY_ID = "Id"; 
+	public static final String KEY_TITLE = "Title";  
+	public static final String KEY_DESCRIPTION = "Description";
+	public static final String KEY_NOTE = "Note";
+	public static final String KEY_THUMB_URL = "CnParams"; 
+	public static final String KEY_TIME = "Modified_Time"; 
+	public static final String KEY_INTROTEXT = "Introtext"; 
+	public static final String KEY_ZCATEGORYURL = "ZCategoryUrl"; 
+	public static final String KEY_AZHUADONG = "Azhuadong"; //判断下级页面是否为滑动列表 值为yes为滑动，，，，《去除使用》
+	public static final String KEY_ZCATEGORSTRINGS = "ZcategoryStrings"; //获取当前列表等级，如为no则为最下级列表，点击跳转至浏览页面
 
 	
 	LazyAdapter adapter;
@@ -161,6 +162,23 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 			progressDialog = ProgressDialog.show(ListViewActivity.this, "", getResources().getString(R.string.xlistview_header_hint_loading), true, false);
 			progress = true;
 			//	progressDialog.setCancelable(true);//设置是否可以使用返回键取消
+			Log.v("测试定时器", "开始");
+			task = new TimerTask() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Log.v("测试定时器", "结束");
+					timer.cancel();	
+					if (progress) {
+						progressDialog.dismiss();
+						Toast.makeText(getApplicationContext(), "连接超时", Toast.LENGTH_SHORT).show();
+					}
+					
+					
+				}
+			};
+			timer.schedule(task,30000,30000);
+			
 			thread();
 		}
 		else {
@@ -195,6 +213,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 			blockdata.clear();
 				for (int i = 0; i < list.size(); i++) {
 					Hashtable<String, String> hashtable = new Hashtable<String, String>();
+					hashtable.put(KEY_ID, (list.get(i).getInfoID()==null? "": list.get(i).getInfoID()));
 					hashtable.put(KEY_TITLE, (list.get(i).getTitle()==null? "": list.get(i).getTitle()));
 					hashtable.put(KEY_DESCRIPTION, (list.get(i).getDescription()==null? "": list.get(i).getDescription()));
 					hashtable.put(KEY_THUMB_URL, (list.get(i).getCnparams()==null? "": list.get(i).getCnparams()));
@@ -223,6 +242,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 	}
 	/**
 	 * 有网络模式检查数据
+	 * 数据与数据库数据数目不一样，删除数据，添加新数据，
 	 */
 	private void intentDate()
 	{
@@ -241,7 +261,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 	
 	
 	/**
-	 * 新数据与数据库数据数目不一样，删除数据，添加新数据，然后调用date方法刷新列表
+	 * 新数据与数据库数据数目不一样，删除数据，添加新数据，
 	 */
 	private void deleteDate()
 	{
@@ -262,6 +282,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 				db.deleteByWhere(User.class, condition);
 				for (int i = 0; i < blockdata.size(); i++) {
 					User user = new User();
+					
 					user.setInfoID(arg2String);
 					user.setTitle(blockdata.get(i).get(KEY_TITLE));
 					user.setNote(blockdata.get(i).get(KEY_NOTE));
@@ -282,22 +303,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 	 */
 	private void thread()
 	{
-		Log.v("测试定时器", "开始");
-		task = new TimerTask() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Log.v("测试定时器", "结束");
-				timer.cancel();	
-				if (progress) {
-					progressDialog.dismiss();
-					Toast.makeText(getApplicationContext(), "连接超时", Toast.LENGTH_SHORT).show();
-				}
-				
-				
-			}
-		};
-		timer.schedule(task,30000,30000);
+
 		
 		new Thread()
 		{
@@ -309,14 +315,15 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 						ArrayList<Test_Model> datalist = data.getData();
 						for (Test_Model test_Model : datalist) {					
 							Hashtable<String, String> hashtable = new Hashtable<String, String>();
-							hashtable.put(KEY_TITLE, test_Model.getTitle());
-							hashtable.put(KEY_DESCRIPTION, test_Model.getDescription());
-							hashtable.put(KEY_THUMB_URL, test_Model.getCnparams());
-							hashtable.put(KEY_ZCATEGORYURL, test_Model.getZcategoryurl());
-							hashtable.put(KEY_ZCATEGORSTRINGS, test_Model.getZcategory());
-							hashtable.put(KEY_TIME, test_Model.getModifiedTime());
-							hashtable.put(KEY_INTROTEXT, test_Model.getIntrotext());
-							hashtable.put(KEY_NOTE, test_Model.getNote());
+							hashtable.put(KEY_ID, test_Model.getId()==null? "": test_Model.getId());
+							hashtable.put(KEY_TITLE, test_Model.getTitle()==null? "": test_Model.getTitle());
+							hashtable.put(KEY_DESCRIPTION, test_Model.getDescription()==null? "": test_Model.getTitle());
+							hashtable.put(KEY_THUMB_URL, test_Model.getCnparams()==null? "": test_Model.getCnparams());
+							hashtable.put(KEY_ZCATEGORYURL, test_Model.getZcategoryurl()==null? "": test_Model.getZcategoryurl());
+							hashtable.put(KEY_ZCATEGORSTRINGS, test_Model.getZcategory()==null? "": test_Model.getZcategory());
+							hashtable.put(KEY_TIME, test_Model.getModifiedTime()==null? "": test_Model.getModifiedTime());
+							hashtable.put(KEY_INTROTEXT, test_Model.getIntrotext()==null? "": test_Model.getIntrotext());
+							hashtable.put(KEY_NOTE, test_Model.getNote()==null? "": test_Model.getNote());
 							blockdata.add(hashtable);
 						}
 						
@@ -350,6 +357,7 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 			if (msg.what == 0) {
 				
 				for (int i = 0; i < blockdata.size(); i++) {
+					Log.e("block--1----", blockdata.get(i).get(KEY_ID));
 					Log.e("block--1----", blockdata.get(i).get(KEY_TITLE));
 					Log.e("block--2----", blockdata.get(i).get(KEY_DESCRIPTION));
 					Log.e("block--3----", blockdata.get(i).get(KEY_THUMB_URL));
@@ -483,6 +491,9 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 				Log.e("listView打印网页地址", webString);
 
 				if (webString.equals("yes")) {
+					
+					Articlecount(blockdata.get(arg2-1).get(KEY_ID));
+					
 					Log.e("listView打印网页地址", blockdata.get(arg2-1 +imageInt).get(KEY_INTROTEXT));
 					intent = new Intent(ListViewActivity.this,WebActivity.class);
 					intent.putExtra("tabText", blockdata.get(arg2-1 +imageInt).get(KEY_TITLE));
@@ -502,11 +513,13 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 					startActivity(intent);
 				}
 				else {
+
+					count(blockdata.get(arg2-1).get(KEY_ID));
 					intent = new Intent(ListViewActivity.this,ListViewActivity.class);
 					intent.putExtra("url",blockdata.get(arg2-1 +imageInt).get(KEY_ZCATEGORYURL));
 					intent.putExtra("tabText",blockdata.get(arg2-1 +imageInt).get(KEY_TITLE));
 					intent.putExtra("web", "no");
-					intent.putExtra("arg2", arg2String +"-" +blockdata.get(arg2-1).get(KEY_TITLE));
+					intent.putExtra("arg2", arg2String +"-" +blockdata.get(arg2-1).get(KEY_ID));
 					startActivity(intent);
 				}
 				
@@ -518,6 +531,49 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
 		
 	};
 
+	private void Articlecount(final String key)
+	{
+		new Thread()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					String countURL= "http://119.36.193.148/suizhou/api/articlec/"+key;
+					
+					Test_Bean data = DataManeger.getTestData(countURL);
+				} catch (Y_Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}.start();
+	}
+	
+	
+	private void count(final String key)
+	{
+		new Thread()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					String countURL= "http://119.36.193.148/suizhou/api/categoryc/"+key;
+					
+					Test_Bean data = DataManeger.getTestData(countURL);
+				} catch (Y_Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}.start();
+	}
+	
 	private void onLoad() {
 		listView.stopRefresh();
 		listView.stopLoadMore();
@@ -851,4 +907,20 @@ public class ListViewActivity extends Activity implements IXListViewListener,OnC
  
         currentIndex = positon;  
     }
+   
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
+   
 }

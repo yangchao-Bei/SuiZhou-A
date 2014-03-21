@@ -18,80 +18,88 @@ package com.example.shenyunsuizhou.json;
 
 public class Test_Model {
 
-	private String title;
-	private String note;
-	private String modified_time;
-	private String cnparams;
-	private String description;
-	private String zcategory;
-	private String zcategoryurl;
-	private String introtext;
+	
+	private String Id;
+	private String Title;
+	private String Note;
+	private String Modified_Time;
+	private String CnParams;
+	private String Description;
+	private String ZCategory;
+	private String ZCategoryUrl;
+	private String IntroText;
 
 	
-
-	
-	public String getTitle() {
-		return title;
+	public String getId() {
+		return Id;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setId(String Id) {
+		this.Id = Id;
+	}
+	
+	public String getTitle() {
+		return Title;
+	}
+
+	public void setTitle(String Title) {
+		this.Title = Title;
 	}
 	
 	public String getNote() {
-		return note;
+		return Note;
 	}
 
-	public void setNote(String note) {
-		this.note = note;
+	public void setNote(String Note) {
+		this.Note = Note;
 	}
 	
 	public String getModifiedTime() {
-		return modified_time;
+		return Modified_Time;
 	}
 
-	public void setModifiedTime(String modified_time) {
-		this.modified_time = modified_time;
+	public void setModifiedTime(String Modified_Time) {
+		this.Modified_Time = Modified_Time;
 	}
 
 	public String getCnparams() {
-		return cnparams;
+		return CnParams;
 	}
 
-	public void setCnparams(String cnparams) {
-		this.cnparams = cnparams;
+	public void setCnparams(String CnParams) {
+		this.CnParams = CnParams;
 	}
 	
 	public String getDescription() {
-		return description;
+		return Description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String Description) {
+		this.Description = Description;
 	}
 	
 	public String getZcategory() {
-		return zcategory;
+		return ZCategory;
 	}
 
-	public void setZcategory(String zcategory) {
-		this.zcategory = zcategory;
+	public void setZcategory(String ZCategory) {
+		this.ZCategory = ZCategory;
 	}
 
 	public String getZcategoryurl() {
-		return zcategoryurl;
+		return ZCategoryUrl;
 	}
 
-	public void setZcategoryurl(String zcategoryurl) {
-		this.zcategoryurl = zcategoryurl;
+	public void setZcategoryurl(String ZCategoryUrl) {
+		this.ZCategoryUrl = ZCategoryUrl;
 	}
 
 	public String getIntrotext()
 	{
-		return introtext;
+		return IntroText;
 	}
-	public void	setIntrotext(String introtext)
+	public void	setIntrotext(String IntroText)
 	{
-		this.introtext = introtext;
+		this.IntroText = IntroText;
 	}
 }

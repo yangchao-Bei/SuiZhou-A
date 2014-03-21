@@ -8,6 +8,8 @@ import com.example.shenyunsuizhou.json.DataManeger;
 import com.example.shenyunsuizhou.json.Test_Bean;
 import com.example.shenyunsuizhou.json.Test_Model;
 import com.example.shenyunsuizhou.json.Y_Exception;
+import com.umeng.analytics.MobclickAgent;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,7 +65,7 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 	private ProgressDialog progressDialog;
 	private String packsString =null;
 	private String upadteURL =null;
-	private String urlString ="http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=155&statez=1";//更新地址
+	private String urlString ="http://119.36.193.148/suizhou/api/categories/155?op=all";//更新地址
 
 	private int[] images= {//存放各个模块图标
 			R.drawable.home1,R.drawable.home2,R.drawable.home3,R.drawable.home4,
@@ -82,31 +84,56 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 			"楚天都市报","评选活动"
 	};
 	private String[] urlStrings = {//存放各个模块数据获取地址
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=86&statez=1",//随州介绍
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=95&statez=1",//旅游资源
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=107&statez=1",//日版电子报
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=112&statez=1",	//随州新闻
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=114&statez=1",	//政务公开	
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=127&statez=1",//清廉随州
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=134&statez=1",//专题视频
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=135&statez=2",//主持人微博
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=136&statez=2",	//企业风采-特汽
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=137&statez=2",//企业风采-工业
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=138&statez=2",//节目直播
+			"http://119.36.193.148/suizhou/api/categories/86?op=all",
+			"http://119.36.193.148/suizhou/api/categories/95?op=all",
+			"http://119.36.193.148/suizhou/api/categories/107?op=all",
+			"http://119.36.193.148/suizhou/api/categories/112?op=all",
+			"http://119.36.193.148/suizhou/api/categories/114?op=all",
+			"http://119.36.193.148/suizhou/api/categories/127?op=all",
+			"http://119.36.193.148/suizhou/api/categories/134?op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=135&op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=136&op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=137&op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=138&op=all",
+			//"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=86&statez=1",//随州介绍
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=95&statez=1",//旅游资源
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=107&statez=1",//日版电子报
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=112&statez=1",	//随州新闻
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=114&statez=1",	//政务公开	
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=127&statez=1",//清廉随州
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=134&statez=1",//专题视频
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=135&statez=2",//主持人微博
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=136&statez=2",	//企业风采-特汽
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=137&statez=2",//企业风采-工业
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=138&statez=2",//节目直播
 			"-",//关于本应用
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=139&statez=2",//企业风采-农业
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=140&statez=2",	//新闻视频
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=141&statez=2",//联通手机业务
+			"http://119.36.193.148/suizhou/api/articles/?catid=139&op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=140&op=all",
+			"http://119.36.193.148/suizhou/api/articles/?catid=141&op=all",
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=139&statez=2",//企业风采-农业
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=140&statez=2",	//新闻视频
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=141&statez=2",//联通手机业务
 			"-",//联通营业厅
 			"-",//公积金帐号
 			"-",//社保账户
 			"-",//医保帐号	
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=142&statez=2",//招聘信息
-			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=143&statez=1",//楚天都市报
+			"http://119.36.193.148/suizhou/api/articles/?catid=142&op=all",
+			"http://119.36.193.148/suizhou/api/categories/143?op=all",
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=142&statez=2",//招聘信息
+//			"http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=143&statez=1",//楚天都市报
 			"-"//评选活动
 
 	};
 
+	
+	private String [] urlCount = {
+			"86","95","107","112","114",
+			"127","134","135","136","137",
+			"138","-","139","140","141",
+			"-","-","-","-","142",
+			"143","-"	
+	};
+	
 	private GridView gridView;	//当前页面才用gridView布局
 	private Button siteButton;	//跳转至设置页面
 	private RadioButton oneRadioButton;//下方记录当前页面翻页图片，此为第一张图，以下2个为另外2个翻页图片
@@ -231,13 +258,16 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 			}
 			else if (arg2 ==7 || arg2 ==8 || arg2 ==9 ||arg2 ==10 || arg2 ==12) 
 			{
+				count(arg2);
 				webPush(arg2);
+				
 			}
 			else if (arg2 ==17 || arg2 ==18 || arg2 ==21 || arg2 ==11) 
 			{
 				developPush(arg2);
 			}
 			else {
+				count(arg2);
 				Push(arg2);
 			}
 			 
@@ -245,6 +275,28 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 		}
 		
 	}
+	
+	private void count(final int key)
+	{
+		new Thread()
+		{
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					String countURL= "http://119.36.193.148/suizhou/api/categoryc/"+urlCount[key];
+					
+					Test_Bean data = DataManeger.getTestData(countURL);
+				} catch (Y_Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}.start();
+	}
+	
 	/**
 	 * 参数web，判定下级页面是否为直接跳转至网页yes为是,no为不是
 	 * arg2参数为判定用户点击的是哪项
@@ -312,7 +364,6 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 	@Override
 	public boolean onTouch(View v, MotionEvent event) {
 		// TODO Auto-generated method stub
-		//Log.i("touch","touch");  
         return mGestureDetector.onTouchEvent(event); 
 	}
 
@@ -385,7 +436,7 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 					for (Test_Model test_Model : datalist) {
 
 						
-						packsString = String.valueOf(test_Model.getNote());
+						packsString = String.valueOf(test_Model.getTitle());
 						upadteURL = String.valueOf(test_Model.getDescription());
 						break;	
 					}
@@ -421,7 +472,20 @@ public class HomeActivity extends Activity implements OnTouchListener,OnGestureL
 	
 	
 	
-	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
+
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
 	
 	@Override
 	public void onLongPress(MotionEvent e) {

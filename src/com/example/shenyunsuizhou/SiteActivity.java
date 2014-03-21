@@ -7,6 +7,7 @@ import com.example.shenyunsuizhou.json.DataManeger;
 import com.example.shenyunsuizhou.json.Test_Bean;
 import com.example.shenyunsuizhou.json.Test_Model;
 import com.example.shenyunsuizhou.json.Y_Exception;
+import com.umeng.analytics.MobclickAgent;
 
 
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class SiteActivity extends Activity implements android.view.View.OnClickL
 	private String packsString =null;
 	private String upadteURL =null;
 	private ProgressDialog progressDialog;
-	private String urlString ="http://121.199.29.181/demo/joomla/suizhou/index.php?option=com_content&view=category&layout=blog&id=155&statez=1";//更新地址
+	private String urlString ="http://119.36.193.148/suizhou/api/categories/155?op=all";//更新地址
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class SiteActivity extends Activity implements android.view.View.OnClickL
 					for (Test_Model test_Model : datalist) {
 
 						
-						packsString = String.valueOf(test_Model.getNote());
+						packsString = String.valueOf(test_Model.getTitle());
 						upadteURL = String.valueOf(test_Model.getDescription());
 						break;
 					}
@@ -162,5 +163,18 @@ public class SiteActivity extends Activity implements android.view.View.OnClickL
 			break;
 		}
 	}
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		MobclickAgent.onResume(this);
+	}
 }
